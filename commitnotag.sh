@@ -86,13 +86,15 @@ svn co $SVNURL $SVNPATH | sed -e 's!^!svn_clone:!g'
 SVNVERSION=`grep "Version:" $SVNPATH/trunk/$MAINFILE | awk -F' ' '{gsub(/[\r\t\n\s]/, "", $NF); print $NF}'`
 
 #delete all but .svn extension files from SVN repo
-find $SVNPATH/trunk -type f | grep -v '.svn' | xargs rm -f | sed -e 's!^!svn_version_grep:!g'
+cd $SVNPATH/trunk
+find . -type f | grep -v '.svn' | xargs rm -f | sed -e 's!^!svn_version_grep:!g'
 
 #copy GIT repo to SVN repo's trunk subfolder
-cp -R $GITPATH/$PLUGINSLUG/* trunk
+cp -R $GITPATH/$PLUGINSLUG/* $SVNPATH/trunk
 
 echo "
 Commit to WordPress SVN...";
+cd $SVNPATH
 svn status | grep -v -E "^.[ \t]*\..*" | grep -E "^?" | awk '{print $2}' | xargs svn add
 svn status | grep -v -E "^.[ \t]*\..*" | grep -E "^!" | awk '{print $2}' | xargs svn delete
 

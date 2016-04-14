@@ -75,25 +75,42 @@ class Github2wpsvn {
       
     } else if( isset($_POST['github2svn_commit']) && isset($_POST['commit_plugin_svn_slug']) && wp_verify_nonce($_POST['github2svn_commit'],'github2svn_commit') ) {
 
+      $bOK = true;
       $git_installed = $this->check_git(); 
       if( !$git_installed ) {
         echo "<div class='error'><p>Git not found or not able to execute if with PHP exec().</p></div>";
-        
-      } else if( empty($_POST['commit_plugin_svn_slug']) ) {
+        $bOK = false;
+      }
+      
+      if( empty($_POST['commit_plugin_svn_slug']) ) {
         echo "<div class='error'><p>Please select some plugin.</p></div>";
-        
-      } else if( empty($_POST['commitmessage']) || trim($_POST['commitmessage']) == '' ) {
+        $bOK = false;
+      }
+      
+      if( empty($_POST['commitmessage']) || trim($_POST['commitmessage']) == '' ) {
         echo "<div class='error'><p>Please enter the commit message.</p></div>";
+        $bOK = false;
+      }
+      
+      if( empty($_POST['user-name']) || trim($_POST['user-name']) == '' ) {
+        echo "<div class='error'><p>Please enter your username.</p></div>";
+        $bOK = false;
+      }
+      
+      if( empty($_POST['user-key']) || trim($_POST['user-key']) == '' ) {
+        echo "<div class='error'><p>Please enter your password.</p></div>";
+        $bOK = false;
+      }
         
-      } else if ( !empty($_POST['commitmessage']) && !empty($_POST['commit_plugin_svn_slug']) ) {
+      if ( $bOK && !empty($_POST['commitmessage']) && !empty($_POST['commit_plugin_svn_slug']) ) {
 
         $plugin_data = explode('|', $_POST['commit_plugin_svn_slug']);
         $plugin_name = $plugin_data[0];
         $plugin_slug = $plugin_data[1];
         $github_repo = $plugin_data[2];
         $plugin_main_php_file = $plugin_data[3];
-        $username = 'USERNAME';
-        $password = 'PASSWORD';
+        $username = trim($_POST['user-name']);
+        $password = trim($_POST['user-key']);
         
         $gittosvn_dir = ABSPATH.'github2svn';
         if (!is_dir($gittosvn_dir)) {
@@ -104,16 +121,16 @@ class Github2wpsvn {
         }
         
         $commit_msg = ( $_POST['commitmessage'] ) ? trim($_POST['commitmessage']) : 'commit message';
-        // $commit_msg = escapeshellarg($commit_msg);
 
         $shellfile = ($_POST['tagcurrent'] == 'on' ) ? 'tagcurrent' : 'commitnotag';
         $bash = ABSPATH.'wp-content/plugins/github2svn/'. $shellfile . '.sh';
         
         ini_set('max_execution_time', 20000);
-        $res = exec( "$bash $plugin_slug $gittosvn_dir $github_repo $username $password '$commit_msg' '$plugin_name', $plugin_main_php_file 2>&1", $arr_output );
-        
+        $args = str_replace( '"', '\"', ("$plugin_slug $gittosvn_dir $github_repo $username $password '$commit_msg' '$plugin_name', $plugin_main_php_file") );
+        $res = exec( "$bash $args 2>&1", $arr_output );
+                
+        echo "Executing: $bash $args\n\n";
         echo "<pre>";
-        echo "Executing: $bash $plugin_slug $gittosvn_dir $github_repo $username $password '$commit_msg' '$plugin_name', $plugin_main_php_file\n\n";
         echo implode("\n",$arr_output);
         echo "</pre>";
         die();  //  for debug
@@ -150,7 +167,7 @@ class Github2wpsvn {
             <table class="wp-list-table widefat fixed striped posts">
               <thead>
                 <tr>
-                  <th>Plugin name</th><th style="width: 200px">Do not commit, but tag</th><th>Commit message</th>
+                  <th>Plugin name</th><th style="width: 200px">Do not commit, but tag</th><th>WordPress.org login</th>
                 </tr>
               </thead>
               <tbody>
@@ -172,12 +189,15 @@ class Github2wpsvn {
                         } 
                       } ?>
                     </select>
+                    <textarea class="large-text" name="commitmessage" id="commitmessage" rows="1" placeholder="Don't forget about commit message"></textarea>                    
                   </td>
                   <td>
                     <input style="float:left;" type="checkbox" name="tagcurrent" id="tagcurrent">
                   </td>
-                  <td>
-                    <textarea class="large-text" name="commitmessage" id="commitmessage" rows="1" placeholder="Don't forget about commit message"></textarea>
+                  <td>                    
+                    <input type="text" name="user-name" placeholder="Username" />
+                    <input type="text" name="user-key" placeholder="Password" />
+                    <br /><small>Your login won't be stored in any database table nor file</small>
                   </td>             
                 </tr>
               </tbody>

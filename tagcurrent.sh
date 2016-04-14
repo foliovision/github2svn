@@ -67,11 +67,11 @@ fi
 #pull svn
 mkdir $SVNPATH
 cd $SVNPATH
-chmod -R 0777 $SVNPATH
-echo "Creating local copy of SVN repo ..."
+
+echo "
+Cloning from WordPress SVN...";
 svn co $SVNURL $SVNPATH | sed -e 's!^!svn_clone:!g'
-chmod -R 0777 $SVNPATH
-chmod 777 $SVNPATH/trunk/$8 
+
 SVNVERSION=`grep "Version:" $SVNPATH/trunk/$8 | awk -F' ' '{gsub(/[\r\t\n\s]/, "", $NF); print $NF}'`
 
 #delete all but .svn extension files from SVN repo
@@ -83,8 +83,10 @@ cd $SVNPATH
 echo "test:$SVNPATH/tags/$SVNVERSION"
 
 # if [ ! -d "$SVNPATH/tags/$SVNVERSION" ]; then
+
+  echo "
+  Tagging the release...";
 	mkdir $SVNPATH/tags/$SVNVERSION
-	chmod -R 0777 $SVNPATH/tags/$SVNVERSION
 	svn add tags/$SVNVERSION | sed -e 's!^!svn_output_add_tags:!g'
 
 	svn copy trunk/* tags/$SVNVERSION | sed -e 's!^!svn_output_copy_trunk_to_tag:!g'
@@ -93,6 +95,8 @@ echo "test:$SVNPATH/tags/$SVNVERSION"
 	svn status | grep -v -E "^.[ \t]*\..*" | grep -E "^?" | awk '{print $2}' | xargs svn add
 	svn status | grep -v -E "^.[ \t]*\..*" | grep -E "^!" | awk '{print $2}' | xargs svn delete
 	
+  echo "
+  Checking in...";  
 	svn ci --username=$SVNUSER --password=$SVNPASS -m "$COMMITMSG" | sed -e 's!^!svn_output_commit:!g'
 	# echo "Need to tag!!!!!!!!!!!!!1"
 	echo currenttagged:"$SVNVERSION"
@@ -105,4 +109,4 @@ echo svnversion:"$SVNVERSION"
 echo pluginname:"$7"
 
 # delete dir after we're done
-rm -R $GITTOSVNDIR
+#rm -R $GITTOSVNDIR

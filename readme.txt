@@ -1,33 +1,40 @@
 === Github2SVN ===
 Contributors: FolioVision
 Donate link: https://foliovision.com/donate
-Tags: comments, spam
+Tags: github, svn, plugin, release
 Requires at least: 3.0.1
 Tested up to: 4.42
 Stable tag: 0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Sync your Github repositories to WordPress SVN for plugin updates.
+Beta version for developers only! Sync your Github repositories to WordPress SVN for plugin updates.
 
 == Description ==
 
+This is the version of plugin which worked for us, but it might not work in your server environment. Use carefully.
+
+It's for plugin developers who maintain repositories on Github and need a way of commiting the changes from Githut to WordPress SVN directly. Plugin also has a feature for tagging the releases.
 
 == Installation ==
 
-1. Put in your WordPress login into the main plugin file - look for "USERNAME" and "PASSWORD"
-2. Check Github to WPSVN in your wp-admin. You have to first add your plugin info.
-3. After commit your will see the output of the command with any errors
+Your server need to have git and svn installed and the exec() PHP call has to be enabled.
 
+Before commiting any plugin you have to enter the plugin information and click "Add Plugin".
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= Do you store the WordPress.org login? =
 
-An answer to that question.
+No, you have to provide it with each commit, it's not stored in any way.
 
+= Do you support the assets/ directory? =
+
+Not right now.
 
 == Screenshots ==
+
+1. The plugin screen.
 
 == Changelog ==
 

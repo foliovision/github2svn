@@ -15,9 +15,9 @@ Sync your Github repositories to WordPress SVN for plugin updates.
 
 == Installation ==
 
-1. Edit $gittosvn_dir in the main plugin file. Pick some directory that exists, ideally outside of public_html
-2. Put in your WordPress login into the main plugin file at lines - look for "USERNAME" and "PASSWORD"
-3. Check Github to WPSVN in your wp-admin. You have to first add your plugin info.
+1. Put in your WordPress login into the main plugin file - look for "USERNAME" and "PASSWORD"
+2. Check Github to WPSVN in your wp-admin. You have to first add your plugin info.
+3. After commit your will see the output of the command with any errors
 
 
 == Frequently Asked Questions ==

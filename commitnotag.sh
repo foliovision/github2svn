@@ -103,6 +103,6 @@ svn commit --username=$SVNUSER --password=$SVNPASS -m "$COMMITMSG" | sed -e 's!^
 echo pluginname:"$7"
 
 # delete dir after we're done
-#rm -R $GITTOSVNDIR
+rm -R "$GITTOSVNDIR"
 
 # echo pluginname:"$7"

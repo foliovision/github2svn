@@ -196,7 +196,7 @@ class Github2wpsvn {
                   </td>
                   <td>                    
                     <input type="text" name="user-name" placeholder="Username" />
-                    <input type="text" name="user-key" placeholder="Password" />
+                    <input type="password" name="user-key" placeholder="Password" />
                     <br /><small>Your login won't be stored in any database table nor file</small>
                   </td>             
                 </tr>
